@@ -1,3 +1,5 @@
+import os
+
 import discord
 from discord.ext import commands
 
@@ -17,6 +19,10 @@ async def greet(ctx):
     await ctx.send(":smiley: :wave: Hello, there!")
 
 
-with open('bot_token.txt') as bot_token_file:
-    token = bot_token_file.readline()
-    bot.run(token)
+try:
+    bot.run(os.environ['TOKEN'])
+except KeyError:
+    with open('bot_token.txt') as bot_token_file:
+        token = bot_token_file.readline()
+
+        bot.run(token)
