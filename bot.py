@@ -25,9 +25,10 @@ gc = gspread.authorize(credentials)
 worksheet = gc.open("LancerAttendance").sheet1
 
 table = PrettyTable()
-table.field_names = ['First Name', 'Last Name', 'Attendance %']
+table.field_names = ['First Name', 'Last Name', 'Attendance %', 'Meeting Requirements']
 table.align['First Name'] = 'l'
-table.align['Attendance %'] = 'r'
+table.align['Last Name'] = 'l'
+table.align['Attendance %'] = 'l'
 
 
 @bot.event
@@ -54,10 +55,17 @@ async def on_message(message):
             if i == 0 or i == 1 or i == 2:
                 pass
             else:
-                row = [first_names[i], last_names[i], percentages[i]]
+                if float(percentages[i][:-1]) > 75:
+                    row = [first_names[i], last_names[i], percentages[i], '( ͡° ͜ʖ ͡°)']
+                else:
+                    row = [first_names[i], last_names[i], percentages[i], '\(!!˚☐˚)/']
+
                 table.add_row(row)
 
         await bot.send_message(message.channel, '`' + table.get_string(title='Attendance') + '`')
+        await bot.send_message(message.channel, '`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
+    elif message.content.startswith('`test'):
+        await bot.send_message(message.channel, '```css\ntesting 1 2 3\n```')
 
 
 token = os.getenv('TOKEN')
