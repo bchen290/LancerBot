@@ -16,7 +16,9 @@ scope = ['https://spreadsheets.google.com/feeds',
 credential_json = os.getenv('LancerAttendanceSheet.json')
 
 if credential_json:
-    credentials = ServiceAccountCredentials.from_json(credential_json, scope)
+    with open('LancerAttendanceSheet.json', 'w+') as file:
+        file.write(credential_json)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('LancerAttendanceSheet.json', scope)
 else:
     credentials = ServiceAccountCredentials.from_json_keyfile_name('../LancerAttendanceSheet.json', scope)
 
@@ -25,7 +27,7 @@ gc = gspread.authorize(credentials)
 worksheet = gc.open("LancerAttendance").sheet1
 
 table = PrettyTable()
-table.field_names = ['First Name', 'Last Name', 'Attendance %', 'Meeting Requirements']
+table.field_names = ['First Name', 'Last Name', 'Attendance %', 'Met Requirements']
 table.align['First Name'] = 'l'
 table.align['Last Name'] = 'l'
 table.align['Attendance %'] = 'l'
