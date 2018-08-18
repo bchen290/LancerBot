@@ -5,10 +5,10 @@ import numpy as np
 import gspread
 
 from prettytable import PrettyTable
-from discord.ext import commands
+import discord
 from oauth2client.service_account import ServiceAccountCredentials
 
-bot = commands.Bot('`')
+client = discord.Client()
 
 scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
@@ -33,17 +33,14 @@ table.align['Last Name'] = 'l'
 table.align['Attendance %'] = 'l'
 
 
-@bot.event
+@client.event
 async def on_ready():
-    print('Logged in as')
-    print(bot.user.name)
-    print(bot.user.id)
-    print('------')
+    print('Logged on as {0}!'.format(client))
 
 
-@bot.event
+@client.event
 async def on_message(message):
-    if message.author == bot.user:
+    if message.author == client.user:
         return
 
     if message.content.startswith('`attendance'):
@@ -57,24 +54,21 @@ async def on_message(message):
             if i == 0 or i == 1 or i == 2:
                 pass
             else:
-                if float(percentages[i][:-1]) > 75:
+                if float(percentages[i][:-1]) >= 75:
                     row = [first_names[i], last_names[i], percentages[i], '( ͡° ͜ʖ ͡°)']
                 else:
                     row = [first_names[i], last_names[i], percentages[i], '\(!!˚☐˚)/']
 
                 table.add_row(row)
 
-        await bot.send_message(message.channel, '`' + table.get_string(title='Attendance') + '`')
-        await bot.send_message(message.channel, '`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
-    elif message.content.startswith('`test'):
-        await bot.send_message(message.channel, '```css\ntesting 1 2 3\n```')
-
+        await message.channel.send('`' + table.get_string(title='Attendance') + '`')
+        await message.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
 
 token = os.getenv('TOKEN')
 if token:
-    bot.run(token)
+    client.run(token)
 else:
     with open('bot_token.txt') as bot_token_file:
         token = bot_token_file.readline()
 
-        bot.run(token)
+        client.run(token)
