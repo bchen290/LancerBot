@@ -2,12 +2,26 @@ import os
 import schedule
 import time
 import gspread
+import tbapy
+import discord
 
 from prettytable import PrettyTable
 from discord.ext import commands
+from discord.embeds import Embed
 from oauth2client.service_account import ServiceAccountCredentials
 
 bot = commands.Bot(command_prefix='>')
+
+
+tba_key = os.getenv('TBAKEY')
+
+if tba_key:
+    tba = tbapy.TBA(tba_key)
+else:
+    with open('tba_key.txt', 'r') as file:
+        tba_key = file.readline()
+
+    tba = tbapy.TBA(tba_key)
 
 scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
@@ -67,8 +81,8 @@ async def on_ready():
     print('Logged on as {0}!'.format(bot.user))
 
 
-@bot.command(pass_context=True)
-async def attendance(ctx, *, name=None):
+@bot.command(pass_context=True, name='attendance')
+async def _attendance(ctx, *, name=None):
     """
     If name is specified, shows attendance for people with that name else shows attendance for everyone
     Also works with just first names
@@ -137,6 +151,51 @@ async def attendance(ctx, *, name=None):
         table.clear_rows()
 
 
+@bot.command(pass_context=True, name='tba')
+async def _tba(ctx):
+    """
+    Shows status for TBA
+    """
+    status_embed = Embed(title='TBA Status', url='https://www.thebluealliance.com', color=discord.Color.blue())\
+        .add_field(name='Current Season', value=str(tba.status().current_season))\
+        .add_field(name='Is TBA Down', value=str(tba.status().is_datafeed_down))\
+        .set_thumbnail(url='https://frcdesigns.files.wordpress.com/2017/06/android_launcher_icon_blue_512.png')
+
+    await ctx.channel.send(embed=status_embed)
+
+
+@bot.command(pass_context=True, name='team')
+async def _team(ctx, *, team_number=None):
+    """
+    Gets information for team from TBA
+    """
+
+    try:
+        if team_number:
+            _ = int(team_number)
+
+            team_info = tba.team('frc' + team_number)
+
+            team_embed = Embed(title='Information for ' + team_number + ' (' + team_info.nickname + ')',
+                               color=discord.Color.blue(), url='https://www.thebluealliance.com/team/' + team_number) \
+                .add_field(name='Team Location', value=team_info.city + ', ' + team_info.country) \
+                .add_field(name='Team Website', value=team_info.website)
+
+            await ctx.channel.send(embed=team_embed)
+        else:
+            raise Exception
+
+    except Exception:
+        error_embed = Embed(title='Error. Bad Usage', color=discord.Color.red()) \
+            .add_field(name='Usage', value='>team [teamNumber]')
+
+        await ctx.channel.send(embed=error_embed)
+
+
+@bot.command(pass_context=True, name='event')
+async def _event(ctx, *, event_name=None):
+    pass
+
 token = os.getenv('TOKEN')
 if token:
     bot.run(token)
@@ -145,10 +204,3 @@ else:
         token = bot_token_file.readline()
 
         bot.run(token)
-
-
-schedule.every().day.at("00:00").do(send_all_attendance)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
