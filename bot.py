@@ -1,7 +1,6 @@
 import os
-import discord
-import asyncio
-import numpy as np
+import sched
+import time
 import gspread
 
 from prettytable import PrettyTable
@@ -88,7 +87,7 @@ async def attendance(ctx, *, name=None):
             await ctx.channel.send('`' + table.get_string(title='Attendance for ' + first_name) + '`')
             await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
         else:
-            await ctx.channel.send('`Error 404: ' + first_name + ' ' + (last_name if last_name is not None else ' ') +  'not found`')
+            await ctx.channel.send('`Error 404: ' + first_name + ' ' + (last_name + ' ' if last_name is not None else '') +  'not found`')
 
         table.clear_rows()
 
@@ -115,3 +114,5 @@ else:
         token = bot_token_file.readline()
 
         bot.run(token)
+
+s = sched.scheduler(time.time(), )
