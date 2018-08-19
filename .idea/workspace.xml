@@ -12,7 +12,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/LancerDiscordBot$bot.coverage" NAME="bot Coverage Results" MODIFIED="1534643694335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/LancerDiscordBot$bot.coverage" NAME="bot Coverage Results" MODIFIED="1534646480674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="-399058447">
@@ -30,12 +30,12 @@
           <entry key="Procfile" value="1" />
           <entry key="gitignore" value="2" />
           <entry key="py" value="8" />
-          <entry key="txt" value="7" />
+          <entry key="txt" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="PLAIN_TEXT" value="10" />
+          <entry key="PLAIN_TEXT" value="11" />
           <entry key="Python" value="8" />
         </counts>
       </usages-collector>
@@ -43,14 +43,14 @@
         <counts>
           <entry key="Procfile" value="58" />
           <entry key="gitignore" value="12" />
-          <entry key="py" value="5578" />
-          <entry key="txt" value="192" />
+          <entry key="py" value="6015" />
+          <entry key="txt" value="375" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="262" />
-          <entry key="Python" value="5578" />
+          <entry key="PLAIN_TEXT" value="445" />
+          <entry key="Python" value="6015" />
         </counts>
       </usages-collector>
     </session>
@@ -60,12 +60,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="83">
-              <caret line="87" column="102" lean-forward="true" selection-start-line="87" selection-start-column="102" selection-end-line="87" selection-end-column="102" />
+            <state relative-caret-position="-119">
+              <caret line="125" column="34" selection-start-line="125" selection-start-column="34" selection-end-line="125" selection-end-column="34" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-                <marker date="1534643577693" expanded="true" signature="1045:1046" ph="..." />
-                <marker date="1534643577693" expanded="true" signature="3453:3455" ph="..." />
+                <marker date="1534646480663" expanded="true" signature="1038:1132" ph="..." />
+                <marker date="1534646480663" expanded="true" signature="1306:1902" ph="..." />
+                <marker date="1534646480663" expanded="true" signature="1912:1913" ph="..." />
+                <marker date="1534646480663" expanded="true" signature="4323:4325" ph="..." />
               </folding>
             </state>
           </provider>
@@ -248,7 +250,21 @@
       <option name="project" value="LOCAL" />
       <updated>1534636146017</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Rework of attendance&#10;&#10;Move attendance command to separate method&#10;Allow searching of everyone's attendance&#10;Allow searching of single user's attendance">
+      <created>1534643820836</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1534643820836</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Add schedule module">
+      <created>1534644388676</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1534644388676</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -291,7 +307,9 @@
     <MESSAGE value="Add meeting requirements to attendance" />
     <MESSAGE value="Create credential file if not found for Heroku" />
     <MESSAGE value="Rewrite using rewrite of discord" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rewrite using rewrite of discord" />
+    <MESSAGE value="Rework of attendance&#10;&#10;Move attendance command to separate method&#10;Allow searching of everyone's attendance&#10;Allow searching of single user's attendance" />
+    <MESSAGE value="Add schedule module" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add schedule module" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/discord/ext/commands/core.py">
@@ -336,9 +354,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/discord/ext/commands/bot.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="251">
@@ -346,14 +361,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-129" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="87" column="102" lean-forward="true" selection-start-line="87" selection-start-column="102" selection-end-line="87" selection-end-column="102" />
+        <state relative-caret-position="-119">
+          <caret line="125" column="34" selection-start-line="125" selection-start-column="34" selection-end-line="125" selection-end-column="34" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
-            <marker date="1534643577693" expanded="true" signature="1045:1046" ph="..." />
-            <marker date="1534643577693" expanded="true" signature="3453:3455" ph="..." />
+            <marker date="1534646480663" expanded="true" signature="1038:1132" ph="..." />
+            <marker date="1534646480663" expanded="true" signature="1306:1902" ph="..." />
+            <marker date="1534646480663" expanded="true" signature="1912:1913" ph="..." />
+            <marker date="1534646480663" expanded="true" signature="4323:4325" ph="..." />
           </folding>
         </state>
       </provider>

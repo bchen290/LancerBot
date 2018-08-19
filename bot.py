@@ -1,5 +1,5 @@
 import os
-import sched
+import schedule
 import time
 import gspread
 
@@ -32,6 +32,36 @@ table.align['Last Name'] = 'l'
 table.align['Attendance %'] = 'l'
 
 
+def is_useless_row(idx):
+    if idx == 0 or idx == 1 or idx == 2 or idx == 3:
+        return True
+
+    return False
+
+
+async def send_all_attendance():
+    gc.login()
+
+    first_names = worksheet.col_values(1)
+    last_names = worksheet.col_values(2)
+    percentages = worksheet.col_values(4)
+
+    for idx, value in enumerate(zip(first_names, last_names, percentages)):
+        if is_useless_row(idx):
+            pass
+        else:
+            first_name, last_name, percentage = value
+            row = [first_name, last_name, percentage,
+                   '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
+            table.add_row(row)
+
+    channel = bot.get_channel(480561105152901120)
+    await channel.send('`' + table.get_string(title='Attendance') + '`')
+    await channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
+
+    table.clear_rows()
+
+
 @bot.event
 async def on_ready():
     print('Logged on as {0}!'.format(bot.user))
@@ -61,19 +91,19 @@ async def attendance(ctx, *, name=None):
             last_name = None
 
         for idx, value in enumerate(zip(first_names, last_names, percentages)):
-            if idx == 0 or idx == 1 or idx == 2:
+            if is_useless_row(idx):
                 pass
             else:
                 fname, _, _ = value
 
-                if fname == first_name:
+                if fname.lower() == first_name.lower():
                     results.append(value)
 
         if last_name is not None:
             for result in results:
                 _, lname, _ = result
 
-                if lname != last_name:
+                if lname.lower() != last_name.lower():
                     results.remove(result)
 
         for result in results:
@@ -93,7 +123,7 @@ async def attendance(ctx, *, name=None):
 
     else:
         for idx, value in enumerate(zip(first_names, last_names, percentages)):
-            if idx == 0 or idx == 1 or idx == 2:
+            if is_useless_row(idx):
                 pass
             else:
                 first_name, last_name, percentage = value
@@ -106,6 +136,7 @@ async def attendance(ctx, *, name=None):
 
         table.clear_rows()
 
+
 token = os.getenv('TOKEN')
 if token:
     bot.run(token)
@@ -115,4 +146,9 @@ else:
 
         bot.run(token)
 
-s = sched.scheduler(time.time(), )
+
+schedule.every().day.at("00:00").do(send_all_attendance)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
