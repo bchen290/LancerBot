@@ -44,12 +44,12 @@
           <entry key="Procfile" value="58" />
           <entry key="gitignore" value="12" />
           <entry key="py" value="6018" />
-          <entry key="txt" value="431" />
+          <entry key="txt" value="496" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="501" />
+          <entry key="PLAIN_TEXT" value="566" />
           <entry key="Python" value="6018" />
         </counts>
       </usages-collector>
@@ -281,14 +281,35 @@
       <option name="project" value="LOCAL" />
       <updated>1534647773252</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Add github link to discord.py">
+      <created>1534688171493</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1534688171493</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Attempt to fix Heroku pip">
+      <created>1534688246228</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1534688246228</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Attempt to fix Heroku pip #2">
+      <created>1534688398983</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1534688398983</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12483221" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12483221" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -302,7 +323,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50067115" side_tool="true" weight="0.32765958" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49932885" visible="true" weight="0.32765958" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49932885" visible="true" weight="0.32765958" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.32907802" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -327,7 +348,10 @@
     <MESSAGE value="Rework of attendance&#10;&#10;Move attendance command to separate method&#10;Allow searching of everyone's attendance&#10;Allow searching of single user's attendance" />
     <MESSAGE value="Add schedule module" />
     <MESSAGE value="Add scheduler to run every midnight" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add scheduler to run every midnight" />
+    <MESSAGE value="Add github link to discord.py" />
+    <MESSAGE value="Attempt to fix Heroku pip" />
+    <MESSAGE value="Attempt to fix Heroku pip #2" />
+    <option name="LAST_COMMIT_MESSAGE" value="Attempt to fix Heroku pip #2" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/discord/ext/commands/core.py">
