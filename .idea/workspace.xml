@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="24c4940b-f1fc-46f8-b04a-faae4ccd1c26" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,12 +30,12 @@
           <entry key="Procfile" value="1" />
           <entry key="gitignore" value="2" />
           <entry key="py" value="8" />
-          <entry key="txt" value="8" />
+          <entry key="txt" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="PLAIN_TEXT" value="11" />
+          <entry key="PLAIN_TEXT" value="12" />
           <entry key="Python" value="8" />
         </counts>
       </usages-collector>
@@ -43,32 +43,41 @@
         <counts>
           <entry key="Procfile" value="58" />
           <entry key="gitignore" value="12" />
-          <entry key="py" value="6015" />
-          <entry key="txt" value="375" />
+          <entry key="py" value="6018" />
+          <entry key="txt" value="431" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="445" />
-          <entry key="Python" value="6015" />
+          <entry key="PLAIN_TEXT" value="501" />
+          <entry key="Python" value="6018" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-119">
-              <caret line="125" column="34" selection-start-line="125" selection-start-column="34" selection-end-line="125" selection-end-column="34" />
+            <state relative-caret-position="119">
+              <caret line="7" column="66" selection-start-line="7" selection-start-column="66" selection-end-line="7" selection-end-column="66" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-                <marker date="1534646480663" expanded="true" signature="1038:1132" ph="..." />
-                <marker date="1534646480663" expanded="true" signature="1306:1902" ph="..." />
-                <marker date="1534646480663" expanded="true" signature="1912:1913" ph="..." />
-                <marker date="1534646480663" expanded="true" signature="4323:4325" ph="..." />
+                <marker date="1534687763901" expanded="true" signature="1038:1132" ph="..." />
+                <marker date="1534687763901" expanded="true" signature="1306:1902" ph="..." />
+                <marker date="1534687763901" expanded="true" signature="1912:1913" ph="..." />
+                <marker date="1534687763901" expanded="true" signature="4323:4325" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/requirements.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" selection-start-line="7" selection-end-line="7" />
             </state>
           </provider>
         </entry>
@@ -119,6 +128,7 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/Procfile" />
         <option value="$PROJECT_DIR$/bot.py" />
+        <option value="$PROJECT_DIR$/requirements.txt" />
       </list>
     </option>
   </component>
@@ -264,7 +274,14 @@
       <option name="project" value="LOCAL" />
       <updated>1534644388676</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Add scheduler to run every midnight">
+      <created>1534647773252</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1534647773252</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -276,7 +293,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.35886526" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.35886526" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -284,8 +301,8 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.32765958" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50067115" side_tool="true" weight="0.32765958" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49932885" visible="true" weight="0.32765958" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.32907802" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -309,7 +326,8 @@
     <MESSAGE value="Rewrite using rewrite of discord" />
     <MESSAGE value="Rework of attendance&#10;&#10;Move attendance command to separate method&#10;Allow searching of everyone's attendance&#10;Allow searching of single user's attendance" />
     <MESSAGE value="Add schedule module" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add schedule module" />
+    <MESSAGE value="Add scheduler to run every midnight" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add scheduler to run every midnight" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/discord/ext/commands/core.py">
@@ -361,22 +379,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-129" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-119">
-          <caret line="125" column="34" selection-start-line="125" selection-start-column="34" selection-end-line="125" selection-end-column="34" />
+        <state relative-caret-position="119">
+          <caret line="7" column="66" selection-start-line="7" selection-start-column="66" selection-end-line="7" selection-end-column="66" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
-            <marker date="1534646480663" expanded="true" signature="1038:1132" ph="..." />
-            <marker date="1534646480663" expanded="true" signature="1306:1902" ph="..." />
-            <marker date="1534646480663" expanded="true" signature="1912:1913" ph="..." />
-            <marker date="1534646480663" expanded="true" signature="4323:4325" ph="..." />
+            <marker date="1534687763901" expanded="true" signature="1038:1132" ph="..." />
+            <marker date="1534687763901" expanded="true" signature="1306:1902" ph="..." />
+            <marker date="1534687763901" expanded="true" signature="1912:1913" ph="..." />
+            <marker date="1534687763901" expanded="true" signature="4323:4325" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
         </state>
       </provider>
     </entry>
