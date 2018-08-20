@@ -14,23 +14,27 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 bot = commands.Bot(command_prefix='>')
 
-
+# If we are in Heroku then TBAKEY will be defined
 tba_key = os.getenv('TBAKEY')
 
 if tba_key:
     tba = tbapy.TBA(tba_key)
 else:
+    # If we are in development then open the key from file
     with open('tba_key.txt', 'r') as file:
         tba_key = file.readline()
 
     tba = tbapy.TBA(tba_key)
 
+# Setting up Google API
 scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
 
+# Again checking if we are using Heroku
 credential_json = os.getenv('LancerAttendanceSheet.json')
 
 if credential_json:
+    # We do not want to upload the json file we will grab it from environment and create a file for google to use
     with open('LancerAttendanceSheet.json', 'w+') as file:
         file.write(credential_json)
     credentials = ServiceAccountCredentials.from_json_keyfile_name('LancerAttendanceSheet.json', scope)
@@ -41,23 +45,36 @@ gc = gspread.authorize(credentials)
 
 worksheet = gc.open("LancerAttendance").sheet1
 
-table = PrettyTable()
-table.field_names = ['First Name', 'Last Name', 'Attendance %', 'Met Requirements']
-table.align['First Name'] = 'l'
-table.align['Last Name'] = 'l'
-table.align['Attendance %'] = 'l'
+# Setting up pretty table and styling it
+attendance_table = PrettyTable()
+attendance_table.field_names = ['First Name', 'Last Name', 'Attendance %', 'Met Requirements']
+attendance_table.align['First Name'] = 'l'
+attendance_table.align['Last Name'] = 'l'
+attendance_table.align['Attendance %'] = 'l'
+
+teams_table = PrettyTable()
+teams_table.field_names = ['Team Name']
 
 
 class ArgumentError(Exception):
+    """
+    Custom exception for incorrect number of arguments in command
+    """
     pass
 
 
 class ScheduleThread(threading.Thread):
+    """
+    Thread to run our schedule since I don't feel comfortable creating an infinite loop in main thread
+    """
     def __init__(self):
         threading.Thread.__init__(self)
         schedule.every().day.at("00:01").do(self.send_all_attendance)
 
     async def send_all_attendance(self):
+        """
+        Used to send attendance information to attendance channel
+        """
         gc.login()
 
         first_names = worksheet.col_values(1)
@@ -71,20 +88,35 @@ class ScheduleThread(threading.Thread):
                 first_name, last_name, percentage = value
                 row = [first_name, last_name, percentage,
                        '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
-                table.add_row(row)
+                attendance_table.add_row(row)
 
         channel = bot.get_channel(480886868326481941)
-        await channel.send('`' + table.get_string(title='Attendance') + '`')
+
+        table = attendance_table.get_string().split('\n')
+        current = ''
+
+        for attendance in table:
+            if len(current) < 1900:
+                current += attendance + '\n'
+            else:
+                await channel.send('`' + current + '`')
+                current = attendance + '\n'
+
+        await channel.send('`' + current + '`')
         await channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
 
-        table.clear_rows()
+        attendance_table.clear_rows()
 
     def run(self):
-        schedule.run_pending()
-        time.sleep(1)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
 
 
 def is_useless_row(idx):
+    """
+    Checks if the current index is a useless index as specified in the sheets
+    """
     if idx == 0 or idx == 1 or idx == 2 or idx == 3:
         return True
 
@@ -140,15 +172,15 @@ async def _attendance(ctx, *, name=None):
 
             row = [fname, lname, percentage,
                    '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
-            table.add_row(row)
+            attendance_table.add_row(row)
 
         if len(results) > 0:
-            await ctx.channel.send('`' + table.get_string(title='Attendance for ' + first_name) + '`')
+            await ctx.channel.send('`' + attendance_table.get_string(title='Attendance for ' + first_name) + '`')
             await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
         else:
             await ctx.channel.send('`Error 404: ' + first_name + ' ' + (last_name + ' ' if last_name is not None else '') +  'not found`')
 
-        table.clear_rows()
+        attendance_table.clear_rows()
 
     else:
         for idx, value in enumerate(zip(first_names, last_names, percentages)):
@@ -158,12 +190,12 @@ async def _attendance(ctx, *, name=None):
                 first_name, last_name, percentage = value
                 row = [first_name, last_name, percentage,
                        '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
-                table.add_row(row)
+                attendance_table.add_row(row)
 
-        attendance_table = table.get_string().split('\n')
+        table = attendance_table.get_string().split('\n')
         current = ''
 
-        for attendance in attendance_table:
+        for attendance in table:
             if len(current) < 1900:
                 current += attendance + '\n'
             else:
@@ -173,7 +205,7 @@ async def _attendance(ctx, *, name=None):
         await ctx.channel.send('`' + current + '`')
         await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
 
-        table.clear_rows()
+        attendance_table.clear_rows()
 
 
 @bot.command(pass_context=True, name='tba')
@@ -199,19 +231,26 @@ async def _team(ctx, *, team_number=None):
         if team_number:
             _ = int(team_number)
 
-            team_info = tba.team('frc' + team_number)
+            team_info = tba.team(team='frc' + team_number)
+            team_awards = tba.team_awards(team='frc' + team_number)
+
+            team_awards.sort(key=lambda x: x.year, reverse=True)
 
             team_embed = Embed(title='Information for ' + team_number + ' (' + team_info.nickname + ')',
                                color=discord.Color.blue(), url='https://www.thebluealliance.com/team/' + team_number) \
                 .add_field(name='Team Location', value=team_info.city + ', ' + team_info.country) \
-                .add_field(name='Team Website', value=team_info.website)
+                .add_field(name='Number of awards', value=len(team_awards))
+
+            for award in team_awards:
+                team_embed.add_field(name=award.name, value=award.year, inline=False)
 
             await ctx.channel.send(embed=team_embed)
         else:
             raise ArgumentError
 
-    except (ValueError, ArgumentError):
-        error_embed = Embed(title='Error(Bad Usage)', color=discord.Color.red()) \
+    except (ValueError, ArgumentError) as e:
+        print(e)
+        error_embed = Embed(title='Error(Bad Usage or Team Not Found)', color=discord.Color.red()) \
             .add_field(name='Usage', value='>team [teamNumber]')
 
         await ctx.channel.send(embed=error_embed)
@@ -224,12 +263,29 @@ async def _team(ctx, *, team_number=None):
 
 
 @bot.command(pass_context=True, name='teams')
-async def _teams(ctx, *, page=1):
+async def _teams(ctx, *, page_number=0):
     """
     Get a list of of valid teams, where page * 500 is the starting team number.
     """
-    print(tba.teams(page=page))
-    await ctx.channel.send(" ")
+    teams = tba.teams(page=page_number)
+
+    for team in teams:
+        row = [str(team.team_number if team.team_number is not None else '') + ' (' + (team.nickname if team.nickname is not None else '') + ')']
+        teams_table.add_row(row)
+
+    table = teams_table.get_string().split('\n')
+    current = ''
+
+    for team in table:
+        if len(current) < 1900:
+            current += team + '\n'
+        else:
+            await ctx.channel.send('`' + current + '`')
+            current = team + '\n'
+
+    await ctx.channel.send('`' + current + '`')
+
+    teams_table.clear_rows()
 
 
 token = os.getenv('TOKEN')
