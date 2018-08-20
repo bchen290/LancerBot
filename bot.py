@@ -1,4 +1,6 @@
 import os
+import threading
+
 import schedule
 import time
 import gspread
@@ -46,34 +48,47 @@ table.align['Last Name'] = 'l'
 table.align['Attendance %'] = 'l'
 
 
+class ArgumentError(Exception):
+    pass
+
+
+class ScheduleThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        schedule.every().day.at("00:01").do(self.send_all_attendance)
+
+    async def send_all_attendance(self):
+        gc.login()
+
+        first_names = worksheet.col_values(1)
+        last_names = worksheet.col_values(2)
+        percentages = worksheet.col_values(4)
+
+        for idx, value in enumerate(zip(first_names, last_names, percentages)):
+            if is_useless_row(idx):
+                pass
+            else:
+                first_name, last_name, percentage = value
+                row = [first_name, last_name, percentage,
+                       '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
+                table.add_row(row)
+
+        channel = bot.get_channel(480886868326481941)
+        await channel.send('`' + table.get_string(title='Attendance') + '`')
+        await channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
+
+        table.clear_rows()
+
+    def run(self):
+        schedule.run_pending()
+        time.sleep(1)
+
+
 def is_useless_row(idx):
     if idx == 0 or idx == 1 or idx == 2 or idx == 3:
         return True
 
     return False
-
-
-async def send_all_attendance():
-    gc.login()
-
-    first_names = worksheet.col_values(1)
-    last_names = worksheet.col_values(2)
-    percentages = worksheet.col_values(4)
-
-    for idx, value in enumerate(zip(first_names, last_names, percentages)):
-        if is_useless_row(idx):
-            pass
-        else:
-            first_name, last_name, percentage = value
-            row = [first_name, last_name, percentage,
-                   '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
-            table.add_row(row)
-
-    channel = bot.get_channel(480561105152901120)
-    await channel.send('`' + table.get_string(title='Attendance') + '`')
-    await channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
-
-    table.clear_rows()
 
 
 @bot.event
@@ -145,7 +160,17 @@ async def _attendance(ctx, *, name=None):
                        '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
                 table.add_row(row)
 
-        await ctx.channel.send('`' + table.get_string(title='Attendance') + '`')
+        attendance_table = table.get_string().split('\n')
+        current = ''
+
+        for attendance in attendance_table:
+            if len(current) < 1900:
+                current += attendance + '\n'
+            else:
+                await ctx.channel.send('`' + current + '`')
+                current = attendance + '\n'
+
+        await ctx.channel.send('`' + current + '`')
         await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
 
         table.clear_rows()
@@ -183,18 +208,29 @@ async def _team(ctx, *, team_number=None):
 
             await ctx.channel.send(embed=team_embed)
         else:
-            raise Exception
+            raise ArgumentError
 
-    except Exception:
-        error_embed = Embed(title='Error. Bad Usage', color=discord.Color.red()) \
+    except (ValueError, ArgumentError):
+        error_embed = Embed(title='Error(Bad Usage)', color=discord.Color.red()) \
             .add_field(name='Usage', value='>team [teamNumber]')
 
         await ctx.channel.send(embed=error_embed)
 
+    except AttributeError:
+        error_embed = Embed(color=discord.Color.red()) \
+            .add_field(name='Error', value='Team Not Found')
 
-@bot.command(pass_context=True, name='event')
-async def _event(ctx, *, event_name=None):
-    pass
+        await ctx.channel.send(embed=error_embed)
+
+
+@bot.command(pass_context=True, name='teams')
+async def _teams(ctx, *, page=1):
+    """
+    Get a list of of valid teams, where page * 500 is the starting team number.
+    """
+    print(tba.teams(page=page))
+    await ctx.channel.send(" ")
+
 
 token = os.getenv('TOKEN')
 if token:
@@ -204,3 +240,6 @@ else:
         token = bot_token_file.readline()
 
         bot.run(token)
+
+thread = ScheduleThread()
+thread.start()
