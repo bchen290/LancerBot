@@ -1,3 +1,4 @@
+import datetime
 import os
 import threading
 
@@ -181,11 +182,11 @@ async def _attendance(ctx, *, name=None):
             percent = float(percentage.strip('%'))
 
             if percent > 100:
-                row = [first_name, last_name, percentage, '( ▀ ͜͞ʖ▀)']
+                row = [fname, lname, percentage, '( ▀ ͜͞ʖ▀)']
             elif 75 <= percent <= 100:
-                row = [first_name, last_name, percentage, '( ͡° ͜ʖ ͡°)']
+                row = [fname, lname, percentage, '( ͡° ͜ʖ ͡°)']
             else:
-                row = [first_name, last_name, percentage, '\(!!˚☐˚)/']
+                row = [fname, lname, percentage, '\(!!˚☐˚)/']
 
             attendance_table.add_row(row)
 
@@ -306,6 +307,11 @@ async def _teams(ctx, *, page_number=0):
     await ctx.channel.send('`' + current + '`')
 
     teams_table.clear_rows()
+
+
+@bot.command(pass_context=True, name='events')
+async def _events(ctx):
+    await ctx.channel.send('In progress')
 
 
 token = os.getenv('TOKEN')
