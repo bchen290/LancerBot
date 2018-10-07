@@ -329,7 +329,8 @@ async def _events(ctx):
     team_embed = Embed(title='Events coming up!', color=discord.Color.green())
 
     for event in events:
-        team_embed.add_field(name='Name', value=event['summary'])
+        if 'summary' in event:
+            team_embed.add_field(name='Name', value=event['summary'])
 
     await ctx.channel.send(embed=team_embed)
 
