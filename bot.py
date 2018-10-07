@@ -117,7 +117,7 @@ def is_useless_row(idx):
     """
     Checks if the current index is a useless index as specified in the sheets
     """
-    if idx == 0 or idx == 1 or idx == 2 or idx == 3:
+    if idx == 0 or idx == 1 or idx == 2:
         return True
 
     return False
@@ -188,8 +188,16 @@ async def _attendance(ctx, *, name=None):
                 pass
             else:
                 first_name, last_name, percentage = value
-                row = [first_name, last_name, percentage,
-                       '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
+
+                percent = float(percentage.strip('%'))
+
+                if percent > 100:
+                    row = [first_name, last_name, percentage, '( ▀ ͜͞ʖ▀)']
+                elif 75 <= percent <= 100:
+                    row = [first_name, last_name, percentage, '( ͡° ͜ʖ ͡°)']
+                else:
+                    row = [first_name, last_name, percentage, '\(!!˚☐˚)/']
+
                 attendance_table.add_row(row)
 
         table = attendance_table.get_string().split('\n')
@@ -240,9 +248,6 @@ async def _team(ctx, *, team_number=None):
                                color=discord.Color.blue(), url='https://www.thebluealliance.com/team/' + team_number) \
                 .add_field(name='Team Location', value=team_info.city + ', ' + team_info.country) \
                 .add_field(name='Number of awards', value=len(team_awards))
-
-            for award in team_awards:
-                team_embed.add_field(name=award.name, value=award.year, inline=False)
 
             await ctx.channel.send(embed=team_embed)
         else:

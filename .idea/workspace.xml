@@ -18,12 +18,15 @@
     <session id="-399058447">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="4" />
+          <entry key="project.closed" value="9" />
+          <entry key="project.open.time.0" value="1" />
+          <entry key="project.open.time.13" value="2" />
           <entry key="project.open.time.16" value="2" />
           <entry key="project.open.time.17" value="1" />
-          <entry key="project.open.time.18" value="1" />
+          <entry key="project.open.time.18" value="2" />
           <entry key="project.open.time.27" value="1" />
-          <entry key="project.opened" value="5" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.opened" value="10" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -45,14 +48,14 @@
           <entry key="Procfile" value="58" />
           <entry key="dummy" value="4" />
           <entry key="gitignore" value="24" />
-          <entry key="py" value="10893" />
-          <entry key="txt" value="751" />
+          <entry key="py" value="11029" />
+          <entry key="txt" value="810" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="837" />
-          <entry key="Python" value="10893" />
+          <entry key="PLAIN_TEXT" value="896" />
+          <entry key="Python" value="11029" />
         </counts>
       </usages-collector>
     </session>
@@ -62,14 +65,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
-              <caret line="236" column="63" selection-start-line="236" selection-start-column="63" selection-end-line="236" selection-end-column="63" />
+            <state relative-caret-position="338">
+              <caret line="197" column="62" selection-start-line="197" selection-start-column="62" selection-end-line="197" selection-end-column="62" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-                <marker date="1534730354394" expanded="true" signature="2014:3490" ph="..." />
-                <marker date="1534730354394" expanded="true" signature="3699:3702" ph="..." />
-                <marker date="1534730354394" expanded="true" signature="3782:3785" ph="..." />
-                <marker date="1534730354394" expanded="true" signature="9310:9313" ph="..." />
               </folding>
             </state>
           </provider>
@@ -79,7 +78,7 @@
         <entry file="file://$PROJECT_DIR$/requirements.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
-              <caret line="8" column="19" lean-forward="true" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
+              <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -118,9 +117,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="width" value="762" />
-    <option name="height" value="1038" />
+    <option name="x" value="-10" />
+    <option name="width" value="765" />
+    <option name="height" value="1040" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -128,7 +127,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -140,6 +138,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -324,18 +323,26 @@
       <option name="project" value="LOCAL" />
       <updated>1534725863877</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Add awards to team information">
+      <created>1534730485610</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1534730485610</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12751678" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13557047" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.35886526" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.35886526" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -377,7 +384,8 @@
     <MESSAGE value="Add tba status and team command" />
     <MESSAGE value="Add tbapy in requirements.txt" />
     <MESSAGE value="Changes&#10;&#10;Move schedule to another Thread&#10;Fix bug where if attendance list is too long discord would not send&#10;Properly catch exceptions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes&#10;&#10;Move schedule to another Thread&#10;Fix bug where if attendance list is too long discord would not send&#10;Properly catch exceptions" />
+    <MESSAGE value="Add awards to team information" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add awards to team information" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/discord/ext/commands/core.py" />
@@ -433,31 +441,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ArgumentError.py" />
+    <entry file="file://$PROJECT_DIR$/bot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="197" column="62" selection-start-line="197" selection-start-column="62" selection-end-line="197" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
-          <caret line="8" column="19" lean-forward="true" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ArgumentError.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="1" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="236" column="63" selection-start-line="236" selection-start-column="63" selection-end-line="236" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-            <marker date="1534730354394" expanded="true" signature="2014:3490" ph="..." />
-            <marker date="1534730354394" expanded="true" signature="3699:3702" ph="..." />
-            <marker date="1534730354394" expanded="true" signature="3782:3785" ph="..." />
-            <marker date="1534730354394" expanded="true" signature="9310:9313" ph="..." />
-          </folding>
+          <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
         </state>
       </provider>
     </entry>
