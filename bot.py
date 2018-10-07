@@ -86,11 +86,19 @@ class ScheduleThread(threading.Thread):
                 pass
             else:
                 first_name, last_name, percentage = value
-                row = [first_name, last_name, percentage,
-                       '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
+
+                percent = float(percentage.strip('%'))
+
+                if percent > 100:
+                    row = [first_name, last_name, percentage, '( ▀ ͜͞ʖ▀)']
+                elif 75 <= percent <= 100:
+                    row = [first_name, last_name, percentage, '( ͡° ͜ʖ ͡°)']
+                else:
+                    row = [first_name, last_name, percentage, '\(!!˚☐˚)/']
+
                 attendance_table.add_row(row)
 
-        channel = bot.get_channel(480886868326481941)
+        channel = bot.get_channel(496013589862154251)
 
         table = attendance_table.get_string().split('\n')
         current = ''
@@ -170,8 +178,15 @@ async def _attendance(ctx, *, name=None):
         for result in results:
             fname, lname, percentage = result
 
-            row = [fname, lname, percentage,
-                   '( ͡° ͜ʖ ͡°)' if float(percentage.strip('%')) >= 75 else '\(!!˚☐˚)/']
+            percent = float(percentage.strip('%'))
+
+            if percent > 100:
+                row = [first_name, last_name, percentage, '( ▀ ͜͞ʖ▀)']
+            elif 75 <= percent <= 100:
+                row = [first_name, last_name, percentage, '( ͡° ͜ʖ ͡°)']
+            else:
+                row = [first_name, last_name, percentage, '\(!!˚☐˚)/']
+
             attendance_table.add_row(row)
 
         if len(results) > 0:
