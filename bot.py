@@ -13,6 +13,11 @@ from discord.ext import commands
 from discord.embeds import Embed
 from oauth2client.service_account import ServiceAccountCredentials
 
+import urllib.request
+import json
+import datetime
+from dateutil import parser
+
 bot = commands.Bot(command_prefix='>')
 
 # If we are in Heroku then TBAKEY will be defined
@@ -45,6 +50,9 @@ else:
 gc = gspread.authorize(credentials)
 
 worksheet = gc.open("LancerAttendance").sheet1
+
+API_KEY = 'AIzaSyBJNF9DXv3jVyqFEM0sYiLYPTv9vW-VFuE'
+BASE_URL = 'https://www.googleapis.com/calendar/v3/calendars/robolancers%40gmail.com/events?key=' + API_KEY + '&timeMin='
 
 # Setting up pretty table and styling it
 attendance_table = PrettyTable()
@@ -311,7 +319,19 @@ async def _teams(ctx, *, page_number=0):
 
 @bot.command(pass_context=True, name='events')
 async def _events(ctx):
-    await ctx.channel.send('In progress')
+    d = datetime.datetime.utcnow()
+    URL = BASE_URL + d.isoformat('T') + 'Z'
+
+    contents = urllib.request.urlopen(URL).read()
+    parsed_json = json.loads(contents.decode())
+    events = parsed_json['items']
+
+    team_embed = Embed(title='Events coming up!', color=discord.Color.green())
+
+    for event in events:
+        team_embed.add_field(name='Name', value=event['summary'])
+
+    await ctx.channel.send(embed=team_embed)
 
 
 token = os.getenv('TOKEN')
