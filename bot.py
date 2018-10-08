@@ -1,4 +1,5 @@
 import datetime
+import numbers
 import os
 import threading
 
@@ -13,10 +14,12 @@ from discord.ext import commands
 from discord.embeds import Embed
 from oauth2client.service_account import ServiceAccountCredentials
 
+import urllib
 import urllib.request
 import json
 import datetime
 from dateutil import parser
+import calendar
 
 bot = commands.Bot(command_prefix='>')
 
@@ -317,8 +320,72 @@ async def _teams(ctx, *, page_number=0):
     teams_table.clear_rows()
 
 
+def extract_time(json):
+    if 'start' in json:
+        if 'date' in json['start']:
+            return (parser.parse(json['start']['date']) - datetime.datetime(1970, 1, 1)).total_seconds()
+        elif 'dateTime' in json['start']:
+            return (parser.parse(json['start']['dateTime']).replace(tzinfo=None) - datetime.datetime(1970, 1, 1)).total_seconds()
+        else:
+            return 0
+    else:
+        return 0
+
+
+def filter_work_times(json):
+    if 'summary' in json:
+        if json['summary'] == 'FRC Work Time' or json['summary'] == 'RoboLancers Work Time':
+            return False
+        return True
+    return False
+
+
+@bot.command(pass_context=True, name='event')
+async def _event(ctx, *, query):
+    d = datetime.datetime.utcnow()
+    URL = BASE_URL + d.isoformat('T') + 'Z'
+    URL += '&q=' + urllib.request.quote(query)
+
+    contents = urllib.request.urlopen(URL).read()
+    parsed_json = json.loads(contents.decode())
+    events = parsed_json['items']
+
+    if not events:
+        embed = Embed(title='No events found!', color=discord.Color.red())
+        await ctx.channel.send(embed=embed)
+        return
+
+    team_embed = Embed(title='Events coming up!', color=discord.Color.green())
+
+    events.sort(key=extract_time)
+    events = list(filter(filter_work_times, events))
+
+    for event in events:
+        if 'status' in event:
+            if event['status'] != 'cancelled':
+                if 'summary' in event:
+                    if 'start' in event:
+                        start = event['start']
+
+                        if 'date' in start:
+                            date = start['date']
+                            d = parser.parse(date)
+                        elif 'dateTime' in start:
+                            date_time = start['dateTime']
+                            d = parser.parse(date_time)
+
+                        current = datetime.datetime.utcnow()
+
+                        if d.replace(tzinfo=None) > current.replace(tzinfo=None):
+                            team_embed.add_field(name=event['summary'],
+                                                 value=str(d.month) + '/' + str(d.day) + '/' + str(d.year),
+                                                 inline=False)
+
+    await ctx.channel.send(embed=team_embed)
+
+
 @bot.command(pass_context=True, name='events')
-async def _events(ctx):
+async def _events(ctx, *, month_name=None):
     d = datetime.datetime.utcnow()
     URL = BASE_URL + d.isoformat('T') + 'Z'
 
@@ -328,11 +395,80 @@ async def _events(ctx):
 
     team_embed = Embed(title='Events coming up!', color=discord.Color.green())
 
-    for event in events:
-        if 'summary' in event:
-            team_embed.add_field(name='Name', value=event['summary'])
+    events.sort(key=extract_time)
+    events = list(filter(filter_work_times, events))
 
-    await ctx.channel.send(embed=team_embed)
+    if month_name:
+
+        try:
+            month_name = int(month_name)
+            for event in events:
+                if 'status' in event:
+                    if event['status'] != 'cancelled':
+                        if 'summary' in event:
+                            if 'start' in event:
+                                start = event['start']
+
+                                if 'date' in start:
+                                    date = start['date']
+                                    d = parser.parse(date)
+                                elif 'dateTime' in start:
+                                    date_time = start['dateTime']
+                                    d = parser.parse(date_time)
+
+                                current = datetime.datetime.utcnow()
+
+                                if d.replace(tzinfo=None) >= current.replace(tzinfo=None):
+                                    if d.month == month_name:
+                                        team_embed.add_field(name=event['summary'],
+                                                             value=str(d.month) + '/' + str(d.day) + '/' + str(d.year),
+                                                             inline=False)
+
+            await ctx.channel.send(embed=team_embed)
+        except ValueError:
+            month = datetime.datetime.strptime(month_name, '%B').month
+            for event in events:
+                if 'status' in event:
+                    if event['status'] != 'cancelled':
+                        if 'summary' in event:
+                            if 'start' in event:
+                                start = event['start']
+
+                                if 'date' in start:
+                                    date = start['date']
+                                    d = parser.parse(date)
+                                elif 'dateTime' in start:
+                                    date_time = start['dateTime']
+                                    d = parser.parse(date_time)
+
+                                current = datetime.datetime.utcnow()
+
+                                if d.replace(tzinfo=None) >= current.replace(tzinfo=None):
+                                    if d.month == month:
+                                        team_embed.add_field(name=event['summary'], value=str(d.month) + '/' + str(d.day) + '/' + str(d.year), inline=False)
+
+            await ctx.channel.send(embed=team_embed)
+    else:
+        for event in events:
+            if 'status' in event:
+                if event['status'] != 'cancelled':
+                    if 'summary' in event:
+                        if 'start' in event:
+                            start = event['start']
+
+                            if 'date' in start:
+                                date = start['date']
+                                d = parser.parse(date)
+                            elif 'dateTime' in start:
+                                date_time = start['dateTime']
+                                d = parser.parse(date_time)
+
+                            current = datetime.datetime.utcnow()
+
+                            if d.replace(tzinfo=None) > current.replace(tzinfo=None):
+                                team_embed.add_field(name=event['summary'], value=str(d.month) + '/' + str(d.day) + '/' + str(d.year), inline=False)
+
+        await ctx.channel.send(embed=team_embed)
 
 
 token = os.getenv('TOKEN')
