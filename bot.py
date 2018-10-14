@@ -372,7 +372,7 @@ async def _events(ctx, *, month_name=None):
                                     team_embed.add_field(name=event['summary'],
                                                          value=str(d.month) + '/' + str(d.day) + '/' + str(d.year),
                                                          inline=False)
-
+        await ctx.channel.send(embed=team_embed)
     else:
         for event in events:
             if 'status' in event:
