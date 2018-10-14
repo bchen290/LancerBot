@@ -54,7 +54,12 @@ gc = gspread.authorize(credentials)
 
 worksheet = gc.open("LancerAttendance").sheet1
 
-API_KEY = 'AIzaSyBJNF9DXv3jVyqFEM0sYiLYPTv9vW-VFuE'
+API_KEY = os.getenv('calendar_api')
+
+if not API_KEY:
+    with open('calendar_api.txt', 'r') as file:
+        API_KEY = file.readline()
+
 BASE_URL = 'https://www.googleapis.com/calendar/v3/calendars/robolancers%40gmail.com/events?key=' + API_KEY + '&timeMin='
 
 # Setting up pretty table and styling it
@@ -73,64 +78,6 @@ class ArgumentError(Exception):
     Custom exception for incorrect number of arguments in command
     """
     pass
-
-
-class ScheduleThread(threading.Thread):
-    """
-    Thread to run our schedule since I don't feel comfortable creating an infinite loop in main thread
-    """
-    def __init__(self):
-        threading.Thread.__init__(self)
-        schedule.every().day.at("00:01").do(self.send_all_attendance)
-
-    async def send_all_attendance(self):
-        """
-        Used to send attendance information to attendance channel
-        """
-        gc.login()
-
-        first_names = worksheet.col_values(1)
-        last_names = worksheet.col_values(2)
-        percentages = worksheet.col_values(4)
-
-        for idx, value in enumerate(zip(first_names, last_names, percentages)):
-            if is_useless_row(idx):
-                pass
-            else:
-                first_name, last_name, percentage = value
-
-                percent = float(percentage.strip('%'))
-
-                if percent > 100:
-                    row = [first_name, last_name, percentage, '( ▀ ͜͞ʖ▀)']
-                elif 75 <= percent <= 100:
-                    row = [first_name, last_name, percentage, '( ͡° ͜ʖ ͡°)']
-                else:
-                    row = [first_name, last_name, percentage, '\(!!˚☐˚)/']
-
-                attendance_table.add_row(row)
-
-        channel = bot.get_channel(496013589862154251)
-
-        table = attendance_table.get_string().split('\n')
-        current = ''
-
-        for attendance in table:
-            if len(current) < 1900:
-                current += attendance + '\n'
-            else:
-                await channel.send('`' + current + '`')
-                current = attendance + '\n'
-
-        await channel.send('`' + current + '`')
-        await channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
-
-        attendance_table.clear_rows()
-
-    def run(self):
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
 
 
 def is_useless_row(idx):
@@ -399,55 +346,33 @@ async def _events(ctx, *, month_name=None):
     events = list(filter(filter_work_times, events))
 
     if month_name:
-
         try:
-            month_name = int(month_name)
-            for event in events:
-                if 'status' in event:
-                    if event['status'] != 'cancelled':
-                        if 'summary' in event:
-                            if 'start' in event:
-                                start = event['start']
-
-                                if 'date' in start:
-                                    date = start['date']
-                                    d = parser.parse(date)
-                                elif 'dateTime' in start:
-                                    date_time = start['dateTime']
-                                    d = parser.parse(date_time)
-
-                                current = datetime.datetime.utcnow()
-
-                                if d.replace(tzinfo=None) >= current.replace(tzinfo=None):
-                                    if d.month == month_name:
-                                        team_embed.add_field(name=event['summary'],
-                                                             value=str(d.month) + '/' + str(d.day) + '/' + str(d.year),
-                                                             inline=False)
-
-            await ctx.channel.send(embed=team_embed)
+            month = int(month_name)
         except ValueError:
             month = datetime.datetime.strptime(month_name, '%B').month
-            for event in events:
-                if 'status' in event:
-                    if event['status'] != 'cancelled':
-                        if 'summary' in event:
-                            if 'start' in event:
-                                start = event['start']
 
-                                if 'date' in start:
-                                    date = start['date']
-                                    d = parser.parse(date)
-                                elif 'dateTime' in start:
-                                    date_time = start['dateTime']
-                                    d = parser.parse(date_time)
+        for event in events:
+            if 'status' in event:
+                if event['status'] != 'cancelled':
+                    if 'summary' in event:
+                        if 'start' in event:
+                            start = event['start']
 
-                                current = datetime.datetime.utcnow()
+                            if 'date' in start:
+                                date = start['date']
+                                d = parser.parse(date)
+                            elif 'dateTime' in start:
+                                date_time = start['dateTime']
+                                d = parser.parse(date_time)
 
-                                if d.replace(tzinfo=None) >= current.replace(tzinfo=None):
-                                    if d.month == month:
-                                        team_embed.add_field(name=event['summary'], value=str(d.month) + '/' + str(d.day) + '/' + str(d.year), inline=False)
+                            current = datetime.datetime.utcnow()
 
-            await ctx.channel.send(embed=team_embed)
+                            if d.replace(tzinfo=None) >= current.replace(tzinfo=None):
+                                if d.month == month:
+                                    team_embed.add_field(name=event['summary'],
+                                                         value=str(d.month) + '/' + str(d.day) + '/' + str(d.year),
+                                                         inline=False)
+
     else:
         for event in events:
             if 'status' in event:
@@ -479,6 +404,3 @@ else:
         token = bot_token_file.readline()
 
         bot.run(token)
-
-thread = ScheduleThread()
-thread.start()
