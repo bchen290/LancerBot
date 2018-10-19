@@ -1,25 +1,17 @@
-import datetime
-import numbers
 import os
-import threading
-
-import schedule
-import time
 import gspread
 import tbapy
 import discord
+import urllib
+import urllib.request
+import json
+import datetime
 
 from prettytable import PrettyTable
 from discord.ext import commands
 from discord.embeds import Embed
 from oauth2client.service_account import ServiceAccountCredentials
-
-import urllib
-import urllib.request
-import json
-import datetime
 from dateutil import parser
-import calendar
 
 bot = commands.Bot(command_prefix='>')
 
@@ -105,7 +97,7 @@ async def _attendance(ctx, *, name=None):
 
     first_names = worksheet.col_values(1)
     last_names = worksheet.col_values(2)
-    percentages = worksheet.col_values(4)
+    percentages = worksheet.col_values(5)
 
     if name:
         results = []
