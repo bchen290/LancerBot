@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="24c4940b-f1fc-46f8-b04a-faae4ccd1c26" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/calendar_api.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/LancerDiscordBot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LancerDiscordBot.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test-calendar.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,37 +64,31 @@
         </counts>
       </usages-collector>
     </session>
+    <session id="-929201825">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.open.time.0" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="317">
-              <caret line="99" column="40" selection-start-line="99" selection-start-column="40" selection-end-line="99" selection-end-column="40" />
-              <folding>
-                <marker date="1539993161300" expanded="true" signature="8989:10546" ph="..." />
-                <marker date="1539993161300" expanded="true" signature="10636:13244" ph="..." />
-                <marker date="1539993161300" expanded="true" signature="13242:13244" ph="..." />
-              </folding>
+            <state relative-caret-position="164">
+              <caret line="90" column="41" selection-start-line="90" selection-start-column="41" selection-end-line="90" selection-end-column="41" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/requirements.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="561">
               <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/calendar_api.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -156,8 +149,8 @@
         <subPane>
           <expand>
             <path>
-              <item name="LancerDiscordBot" type="b2602c69:ProjectViewProjectNode" />
-              <item name="LancerDiscordBot" type="462c0819:PsiDirectoryNode" />
+              <item name="LancerBot" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LancerBot" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -457,8 +450,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14630872" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14832215" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -519,22 +513,10 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/discord/ext/commands/core.py" />
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/discord/client.py" />
-    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/oauth2client/service_account.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="422" column="8" selection-start-line="422" selection-start-column="8" selection-end-line="422" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/oauth2client/service_account.py" />
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/discord/ext/commands/bot.py" />
     <entry file="file://$PROJECT_DIR$/requirements-discord.txt" />
-    <entry file="file://$PROJECT_DIR$/bot_token.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/bot_token.txt" />
     <entry file="file://$PROJECT_DIR$/Procfile">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -542,27 +524,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/tbapy/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
-          <caret line="17" column="6" lean-forward="true" selection-start-line="17" selection-start-column="6" selection-end-line="17" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/tbapy/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5373">
-          <caret line="51" column="21" selection-start-line="51" selection-start-column="21" selection-end-line="51" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tba_key.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/tbapy/models.py" />
+    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/tbapy/main.py" />
+    <entry file="file://$PROJECT_DIR$/tba_key.txt" />
     <entry file="file://$PROJECT_DIR$/ArgumentError.py" />
     <entry file="file://$PROJECT_DIR$/test-calendar.py" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
@@ -572,15 +536,11 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/calendar_api.txt" />
     <entry file="file://$PROJECT_DIR$/bot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="317">
-          <caret line="99" column="40" selection-start-line="99" selection-start-column="40" selection-end-line="99" selection-end-column="40" />
-          <folding>
-            <marker date="1539993161300" expanded="true" signature="8989:10546" ph="..." />
-            <marker date="1539993161300" expanded="true" signature="10636:13244" ph="..." />
-            <marker date="1539993161300" expanded="true" signature="13242:13244" ph="..." />
-          </folding>
+        <state relative-caret-position="164">
+          <caret line="90" column="41" selection-start-line="90" selection-start-column="41" selection-end-line="90" selection-end-column="41" />
         </state>
       </provider>
     </entry>
@@ -588,13 +548,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="561">
           <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/calendar_api.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-column="39" />
         </state>
       </provider>
     </entry>
