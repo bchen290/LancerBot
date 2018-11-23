@@ -22,7 +22,7 @@ if tba_key:
     tba = tbapy.TBA(tba_key)
 else:
     # If we are in development then open the key from file
-    with open('tba_key.txt', 'r') as file:
+    with open('../tba_key.txt', 'r') as file:
         tba_key = file.readline()
 
     tba = tbapy.TBA(tba_key)
@@ -44,12 +44,13 @@ else:
 
 gc = gspread.authorize(credentials)
 
-worksheet = gc.open("LancerAttendance").sheet1
+FRC_attendance_worksheet = gc.open("LancerAttendance").sheet1
+FTC_attendance_worksheet = gc.open("LancerAttendance").worksheet("FTC")
 
 API_KEY = os.getenv('calendar_api')
 
 if not API_KEY:
-    with open('calendar_api.txt', 'r') as file:
+    with open('../calendar_api.txt', 'r') as file:
         API_KEY = file.readline()
 
 BASE_URL = 'https://www.googleapis.com/calendar/v3/calendars/robolancers%40gmail.com/events?key=' + API_KEY + '&timeMin='
@@ -87,17 +88,31 @@ async def on_ready():
     print('Logged on as {0}!'.format(bot.user))
 
 
-@bot.command(pass_context=True, name='attendance')
+@bot.command(pass_context=True, name='frc')
 async def _attendance(ctx, *, name=None):
+    await displayAttendance(ctx, isFRC=True, name=name)
+
+
+@bot.command(pass_context=True, name='ftc')
+async def _attendance(ctx, *, name=None):
+    await displayAttendance(ctx, isFRC=False, name=name)
+
+
+async def displayAttendance(ctx, isFRC, name=None):
     """
     If name is specified, shows attendance for people with that name else shows attendance for everyone
     Also works with just first names
     """
     gc.login()
 
-    first_names = worksheet.col_values(1)
-    last_names = worksheet.col_values(2)
-    percentages = worksheet.col_values(5)
+    if isFRC:
+        first_names = FRC_attendance_worksheet.col_values(1)
+        last_names = FRC_attendance_worksheet.col_values(2)
+        percentages = FRC_attendance_worksheet.col_values(5)
+    else:
+        first_names = FTC_attendance_worksheet.col_values(1)
+        last_names = FTC_attendance_worksheet.col_values(2)
+        percentages = FTC_attendance_worksheet.col_values(4)
 
     if name:
         results = []
@@ -129,7 +144,10 @@ async def _attendance(ctx, *, name=None):
         for result in results:
             fname, lname, percentage = result
 
-            percent = float(percentage.strip('%'))
+            try:
+                percent = float(percentage.strip('%'))
+            except ValueError:
+                continue
 
             if percent > 100:
                 row = [fname, lname, percentage, '( ▀ ͜͞ʖ▀)']
@@ -144,7 +162,7 @@ async def _attendance(ctx, *, name=None):
             await ctx.channel.send('`' + attendance_table.get_string(title='Attendance for ' + first_name) + '`')
             await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
         else:
-            await ctx.channel.send('`Error 404: ' + first_name + ' ' + (last_name + ' ' if last_name is not None else '') +  'not found`')
+            await ctx.channel.send('`Error 404: ' + first_name + ' ' + (last_name + ' ' if last_name is not None else '') + 'not found`')
 
         attendance_table.clear_rows()
 
@@ -155,7 +173,10 @@ async def _attendance(ctx, *, name=None):
             else:
                 first_name, last_name, percentage = value
 
-                percent = float(percentage.strip('%'))
+                try:
+                    percent = float(percentage.strip('%'))
+                except ValueError:
+                    continue
 
                 if percent > 100:
                     row = [first_name, last_name, percentage, '( ▀ ͜͞ʖ▀)']
@@ -392,7 +413,7 @@ token = os.getenv('TOKEN')
 if token:
     bot.run(token)
 else:
-    with open('bot_token.txt') as bot_token_file:
+    with open('../bot_token.txt') as bot_token_file:
         token = bot_token_file.readline()
 
         bot.run(token)
