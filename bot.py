@@ -119,7 +119,7 @@ async def displayAttendance(ctx, isFRC, param=None):
     if param:
         params = param.lower().split(' ')
         # Allows people to sort the table with ascending or descending values
-        if param[0] is 'up' or param[0] is 'down':
+        if params[0] == 'up' or params[0] == 'down':
             is_descending = params[0] == 'down'
             choices = {'first': 0, 'last': 1, 'percent': 2}
 
@@ -142,9 +142,9 @@ async def displayAttendance(ctx, isFRC, param=None):
             attendance_list = [name for name in attendance_list if name[0].lower().find(first_name) != -1 and name[1].lower().find(last_name) != -1]
 
             if len(attendance_list) > 0:
-                attendance_table.title = 'Attendance for ' + attendance_list[0]
+                attendance_table.title = 'Attendance for ' + attendance_list[0][0]
             else:
-                await ctx.channel.send('`Error 404: ' + attendance_list[0] + ' ' + (last_name + ' ' if last_name is not None else '') + 'not found`')
+                await ctx.channel.send('`Error 404: ' + first_name + ' ' + last_name + ' not found`')
                 return
 
     for value in attendance_list:
