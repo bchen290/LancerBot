@@ -89,19 +89,19 @@ async def on_ready():
 
 
 @bot.command(pass_context=True, name='frc')
-async def _attendance(ctx, *, name=None):
-    await displayAttendance(ctx, isFRC=True, name=name)
+async def _attendance(ctx, *, param=None):
+    await displayAttendance(ctx, isFRC=True, param=param)
 
 
 @bot.command(pass_context=True, name='ftc')
-async def _attendance(ctx, *, name=None):
-    await displayAttendance(ctx, isFRC=False, name=name)
+async def _attendance(ctx, *, param=None):
+    await displayAttendance(ctx, isFRC=False, param=param)
 
 
-async def displayAttendance(ctx, isFRC, name=None):
+async def displayAttendance(ctx, isFRC, param=None):
     """
-    If name is specified, shows attendance for people with that name else shows attendance for everyone
-    Also works with just first names
+    If param is specified, allows people to sort by ascending/descending (up/down) order
+    Also allows people to search their own name
     """
     gc.login()
 
@@ -114,93 +114,71 @@ async def displayAttendance(ctx, isFRC, name=None):
         last_names = FTC_attendance_worksheet.col_values(2)
         percentages = FTC_attendance_worksheet.col_values(4)
 
-    if name:
-        results = []
+    percentages = [int(percent.replace('%', '')) for percent in percentages]
+    attendance_list = []
+    for index, value in enumerate(zip(first_names, last_names, percentages)):
+        if not is_useless_row(index):
+            attendance_list.append(value)
+    
+    # Allows people to sort the table with ascending or descending values
+    if param and param[0] is 'up' or param[0] is 'down':
+        params = param.lower().split(' ')
+        is_descending = params[0] == 'down'
+        choices = {'first': 0, 'last': 1, 'percent': 2}
 
-        split_name = name.split(' ')
+        try:
+            column = params[1]
+        except IndexError:
+            column = 0
+            
+        attendance_list = sorted(attendance_list, key=lambda x: x[choices.get(column, 0)], reverse=is_descending)
+        
+    # Allows people to input a name to check attendance
+    elif param:
+        split_name = param.lower().split(' ')
         first_name = split_name[0]
 
         try:
             last_name = split_name[1]
         except IndexError:
-            last_name = None
+            last_name = ''
 
-        for idx, value in enumerate(zip(first_names, last_names, percentages)):
-            if is_useless_row(idx):
-                pass
-            else:
-                fname, _, _ = value
+        attendance_list = [name for name in attendance_list if name[0].lower().find(first_name) != -1 and name[1].lower().find(last_name) != -1]
 
-                if fname.lower() == first_name.lower():
-                    results.append(value)
-
-        if last_name is not None:
-            for result in results:
-                _, lname, _ = result
-
-                if lname.lower() != last_name.lower():
-                    results.remove(result)
-
-        for result in results:
-            fname, lname, percentage = result
-
-            try:
-                percent = float(percentage.strip('%'))
-            except ValueError:
-                continue
-
-            if percent > 100:
-                row = [fname, lname, percentage, '( ▀ ͜͞ʖ▀)']
-            elif 75 <= percent <= 100:
-                row = [fname, lname, percentage, '( ͡° ͜ʖ ͡°)']
-            else:
-                row = [fname, lname, percentage, '\(!!˚☐˚)/']
-
-            attendance_table.add_row(row)
-
-        if len(results) > 0:
-            await ctx.channel.send('`' + attendance_table.get_string(title='Attendance for ' + first_name) + '`')
-            await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
+        if len(attendance_list) > 0:
+            attendance_table.title = 'Attendance for ' + attendance_list[0]
         else:
-            await ctx.channel.send('`Error 404: ' + first_name + ' ' + (last_name + ' ' if last_name is not None else '') + 'not found`')
+            await ctx.channel.send('`Error 404: ' + attendance_list[0] + ' ' + (last_name + ' ' if last_name is not None else '') + 'not found`')
+            return
 
-        attendance_table.clear_rows()
+    for value in attendance_list:
+        first_name, last_name, percent = value
 
-    else:
-        for idx, value in enumerate(zip(first_names, last_names, percentages)):
-            if is_useless_row(idx):
-                pass
-            else:
-                first_name, last_name, percentage = value
+        if percent > 100:
+            emoji = '( ▀ ͜͞ʖ▀)'
+        elif 75 <= percent <= 100:
+            emoji = '( ͡° ͜ʖ ͡°)'
+        else:
+            emoji = '\(!!˚☐˚)/'
+        
+        row = [first_name, last_name, str(percent)+'%', emoji]
 
-                try:
-                    percent = float(percentage.strip('%'))
-                except ValueError:
-                    continue
+        attendance_table.add_row(row)
 
-                if percent > 100:
-                    row = [first_name, last_name, percentage, '( ▀ ͜͞ʖ▀)']
-                elif 75 <= percent <= 100:
-                    row = [first_name, last_name, percentage, '( ͡° ͜ʖ ͡°)']
-                else:
-                    row = [first_name, last_name, percentage, '\(!!˚☐˚)/']
+    table = attendance_table.get_string().split('\n')
+    current = ''
 
-                attendance_table.add_row(row)
+    for attendance in table:
+        if len(current) < 1900:
+            current += attendance + '\n'
+        else:
+            await ctx.channel.send('`' + current + '`')
+            current = attendance + '\n'
 
-        table = attendance_table.get_string().split('\n')
-        current = ''
+    await ctx.channel.send('`' + current + '`')
+    await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
 
-        for attendance in table:
-            if len(current) < 1900:
-                current += attendance + '\n'
-            else:
-                await ctx.channel.send('`' + current + '`')
-                current = attendance + '\n'
-
-        await ctx.channel.send('`' + current + '`')
-        await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
-
-        attendance_table.clear_rows()
+    attendance_table.clear_rows()
 
 
 @bot.command(pass_context=True, name='tba')
