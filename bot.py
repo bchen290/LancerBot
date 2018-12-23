@@ -15,6 +15,12 @@ from dateutil import parser
 
 bot = commands.Bot(command_prefix='>')
 
+# Start index for the rows of the attendance sheet
+START_INDEX = 3
+
+# Max length of discord message
+MAX_LENGTH = 1900
+
 # If we are in Heroku then TBAKEY will be defined
 tba_key = os.getenv('TBAKEY')
 
@@ -73,39 +79,29 @@ class ArgumentError(Exception):
     pass
 
 
-def is_useless_row(idx):
-    """
-    Checks if the current index is a useless index as specified in the sheets
-    """
-    if idx == 0 or idx == 1 or idx == 2:
-        return True
-
-    return False
-
-
 @bot.event
 async def on_ready():
     print('Logged on as {0}!'.format(bot.user))
 
 
 @bot.command(pass_context=True, name='frc')
-async def _attendance(ctx, *, name=None):
-    await displayAttendance(ctx, isFRC=True, name=name)
+async def _attendance(ctx, *, param=None):
+    await display_attendance(ctx, is_frc=True, param=param)
 
 
 @bot.command(pass_context=True, name='ftc')
-async def _attendance(ctx, *, name=None):
-    await displayAttendance(ctx, isFRC=False, name=name)
+async def _attendance(ctx, *, param=None):
+    await display_attendance(ctx, is_frc=False, param=param)
 
 
-async def displayAttendance(ctx, isFRC, name=None):
+async def display_attendance(ctx, is_frc, param=None):
     """
-    If name is specified, shows attendance for people with that name else shows attendance for everyone
-    Also works with just first names
+    If param is specified, allows people to sort by ascending/descending (up/down) order
+    Also allows people to search their own name
     """
     gc.login()
 
-    if isFRC:
+    if is_frc:
         first_names = FRC_attendance_worksheet.col_values(1)
         last_names = FRC_attendance_worksheet.col_values(2)
         percentages = FRC_attendance_worksheet.col_values(5)
@@ -114,93 +110,73 @@ async def displayAttendance(ctx, isFRC, name=None):
         last_names = FTC_attendance_worksheet.col_values(2)
         percentages = FTC_attendance_worksheet.col_values(4)
 
-    if name:
-        results = []
+    first_names = first_names[START_INDEX:]
+    last_names = last_names[START_INDEX:]
+    percentages = percentages[START_INDEX:]
 
-        split_name = name.split(' ')
-        first_name = split_name[0]
+    percentages = [float(percent.replace('%', '')) for percent in percentages]
 
-        try:
-            last_name = split_name[1]
-        except IndexError:
-            last_name = None
+    attendance_list = [attendance for attendance in zip(first_names, last_names, percentages)]
 
-        for idx, value in enumerate(zip(first_names, last_names, percentages)):
-            if is_useless_row(idx):
-                pass
-            else:
-                fname, _, _ = value
-
-                if fname.lower() == first_name.lower():
-                    results.append(value)
-
-        if last_name is not None:
-            for result in results:
-                _, lname, _ = result
-
-                if lname.lower() != last_name.lower():
-                    results.remove(result)
-
-        for result in results:
-            fname, lname, percentage = result
+    if param:
+        params = param.lower().split(' ')
+        # Allows people to sort the table with ascending or descending values
+        if params[0] == 'up' or params[0] == 'down':
+            is_descending = params[0] == 'down'
+            choices = {'first': 0, 'last': 1, 'percent': 2}
 
             try:
-                percent = float(percentage.strip('%'))
-            except ValueError:
-                continue
-
-            if percent > 100:
-                row = [fname, lname, percentage, '( ▀ ͜͞ʖ▀)']
-            elif 75 <= percent <= 100:
-                row = [fname, lname, percentage, '( ͡° ͜ʖ ͡°)']
-            else:
-                row = [fname, lname, percentage, '\(!!˚☐˚)/']
-
-            attendance_table.add_row(row)
-
-        if len(results) > 0:
-            await ctx.channel.send('`' + attendance_table.get_string(title='Attendance for ' + first_name) + '`')
-            await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
+                column = params[1]
+            except IndexError:
+                column = 0
+                
+            attendance_list = sorted(attendance_list, key=lambda x: x[choices.get(column, 0)], reverse=is_descending)
+            
+        # Allows people to input a name to check attendance
         else:
-            await ctx.channel.send('`Error 404: ' + first_name + ' ' + (last_name + ' ' if last_name is not None else '') + 'not found`')
+            first_name = params[0]
 
-        attendance_table.clear_rows()
+            try:
+                last_name = params[1]
+            except IndexError:
+                last_name = ''
 
-    else:
-        for idx, value in enumerate(zip(first_names, last_names, percentages)):
-            if is_useless_row(idx):
-                pass
+            attendance_list = [name for name in attendance_list if name[0].lower().find(first_name) != -1 and name[1].lower().find(last_name) != -1]
+
+            if len(attendance_list) > 0:
+                attendance_table.title = 'Attendance for ' + attendance_list[0][0]
             else:
-                first_name, last_name, percentage = value
+                await ctx.channel.send('`Error 404: ' + first_name + ' ' + last_name + ' not found`')
+                return
 
-                try:
-                    percent = float(percentage.strip('%'))
-                except ValueError:
-                    continue
+    for value in attendance_list:
+        first_name, last_name, percent = value
 
-                if percent > 100:
-                    row = [first_name, last_name, percentage, '( ▀ ͜͞ʖ▀)']
-                elif 75 <= percent <= 100:
-                    row = [first_name, last_name, percentage, '( ͡° ͜ʖ ͡°)']
-                else:
-                    row = [first_name, last_name, percentage, '\(!!˚☐˚)/']
+        if percent > 100:
+            emoji = '( ▀ ͜͞ʖ▀)'
+        elif 75 <= percent <= 100:
+            emoji = '( ͡° ͜ʖ ͡°)'
+        else:
+            emoji = '\(!!˚☐˚)/'
+        
+        row = [first_name, last_name, str(percent)+'%', emoji]
 
-                attendance_table.add_row(row)
+        attendance_table.add_row(row)
 
-        table = attendance_table.get_string().split('\n')
-        current = ''
+    table = attendance_table.get_string().split('\n')
+    current = ''
 
-        for attendance in table:
-            if len(current) < 1900:
-                current += attendance + '\n'
-            else:
-                await ctx.channel.send('`' + current + '`')
-                current = attendance + '\n'
+    for attendance in table:
+        if len(current) < MAX_LENGTH:
+            current += attendance + '\n'
+        else:
+            await ctx.channel.send('`' + current + '`')
+            current = attendance + '\n'
 
-        await ctx.channel.send('`' + current + '`')
-        await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
+    await ctx.channel.send('`' + current + '`')
+    await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
 
-        attendance_table.clear_rows()
+    attendance_table.clear_rows()
 
 
 @bot.command(pass_context=True, name='tba')
@@ -269,7 +245,7 @@ async def _teams(ctx, *, page_number=0):
     current = ''
 
     for team in table:
-        if len(current) < 1900:
+        if len(current) < MAX_LENGTH:
             current += team + '\n'
         else:
             await ctx.channel.send('`' + current + '`')
@@ -280,21 +256,21 @@ async def _teams(ctx, *, page_number=0):
     teams_table.clear_rows()
 
 
-def extract_time(json):
-    if 'start' in json:
-        if 'date' in json['start']:
-            return (parser.parse(json['start']['date']) - datetime.datetime(1970, 1, 1)).total_seconds()
-        elif 'dateTime' in json['start']:
-            return (parser.parse(json['start']['dateTime']).replace(tzinfo=None) - datetime.datetime(1970, 1, 1)).total_seconds()
+def extract_time(data):
+    if 'start' in data:
+        if 'date' in data['start']:
+            return (parser.parse(data['start']['date']) - datetime.datetime(1970, 1, 1)).total_seconds()
+        elif 'dateTime' in data['start']:
+            return (parser.parse(data['start']['dateTime']).replace(tzinfo=None) - datetime.datetime(1970, 1, 1)).total_seconds()
         else:
             return 0
     else:
         return 0
 
 
-def filter_work_times(json):
-    if 'summary' in json:
-        if json['summary'] == 'FRC Work Time' or json['summary'] == 'RoboLancers Work Time':
+def filter_work_times(data):
+    if 'summary' in data:
+        if data['summary'] == 'FRC Work Time' or data['summary'] == 'RoboLancers Work Time':
             return False
         return True
     return False
@@ -303,10 +279,10 @@ def filter_work_times(json):
 @bot.command(pass_context=True, name='event')
 async def _event(ctx, *, query):
     d = datetime.datetime.utcnow()
-    URL = BASE_URL + d.isoformat('T') + 'Z'
-    URL += '&q=' + urllib.request.quote(query)
+    url = BASE_URL + d.isoformat('T') + 'Z'
+    url += '&q=' + urllib.request.quote(query)
 
-    contents = urllib.request.urlopen(URL).read()
+    contents = urllib.request.urlopen(url).read()
     parsed_json = json.loads(contents.decode())
     events = parsed_json['items']
 
@@ -347,9 +323,9 @@ async def _event(ctx, *, query):
 @bot.command(pass_context=True, name='events')
 async def _events(ctx, *, month_name=None):
     d = datetime.datetime.utcnow()
-    URL = BASE_URL + d.isoformat('T') + 'Z'
+    url = BASE_URL + d.isoformat('T') + 'Z'
 
-    contents = urllib.request.urlopen(URL).read()
+    contents = urllib.request.urlopen(url).read()
     parsed_json = json.loads(contents.decode())
     events = parsed_json['items']
 
