@@ -15,6 +15,9 @@ from dateutil import parser
 
 bot = commands.Bot(command_prefix='>')
 
+# Start index for the rows of the attendance sheet
+start_index = 3
+
 # If we are in Heroku then TBAKEY will be defined
 tba_key = os.getenv('TBAKEY')
 
@@ -104,12 +107,11 @@ async def displayAttendance(ctx, isFRC, param=None):
         last_names = FTC_attendance_worksheet.col_values(2)
         percentages = FTC_attendance_worksheet.col_values(4)
 
-    start_index = 3
     first_names = first_names[start_index:]
     last_names = last_names[start_index:]
     percentages = percentages[start_index:]
 
-    percentages = [int(percent.replace('%', '')) for percent in percentages]
+    percentages = [float(percent.replace('%', '')) for percent in percentages]
     attendance_list = []
     for index, value in enumerate(zip(first_names, last_names, percentages)):
         attendance_list.append(value)
