@@ -83,22 +83,22 @@ async def on_ready():
 
 @bot.command(pass_context=True, name='frc')
 async def _attendance(ctx, *, param=None):
-    await displayAttendance(ctx, isFRC=True, param=param)
+    await display_attendance(ctx, is_frc=True, param=param)
 
 
 @bot.command(pass_context=True, name='ftc')
 async def _attendance(ctx, *, param=None):
-    await displayAttendance(ctx, isFRC=False, param=param)
+    await display_attendance(ctx, is_frc=False, param=param)
 
 
-async def displayAttendance(ctx, isFRC, param=None):
+async def display_attendance(ctx, is_frc, param=None):
     """
     If param is specified, allows people to sort by ascending/descending (up/down) order
     Also allows people to search their own name
     """
     gc.login()
 
-    if isFRC:
+    if is_frc:
         first_names = FRC_attendance_worksheet.col_values(1)
         last_names = FRC_attendance_worksheet.col_values(2)
         percentages = FRC_attendance_worksheet.col_values(5)
@@ -112,10 +112,9 @@ async def displayAttendance(ctx, isFRC, param=None):
     percentages = percentages[start_index:]
 
     percentages = [float(percent.replace('%', '')) for percent in percentages]
-    attendance_list = []
-    for index, value in enumerate(zip(first_names, last_names, percentages)):
-        attendance_list.append(value)
-    
+
+    attendance_list = [attendance for attendance in zip(first_names, last_names, percentages)]
+
     if param:
         params = param.lower().split(' ')
         # Allows people to sort the table with ascending or descending values
