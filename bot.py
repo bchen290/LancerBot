@@ -73,16 +73,6 @@ class ArgumentError(Exception):
     pass
 
 
-def is_useless_row(idx):
-    """
-    Checks if the current index is a useless index as specified in the sheets
-    """
-    if idx == 0 or idx == 1 or idx == 2:
-        return True
-
-    return False
-
-
 @bot.event
 async def on_ready():
     print('Logged on as {0}!'.format(bot.user))
@@ -114,11 +104,15 @@ async def displayAttendance(ctx, isFRC, param=None):
         last_names = FTC_attendance_worksheet.col_values(2)
         percentages = FTC_attendance_worksheet.col_values(4)
 
+    start_index = 3
+    first_names = first_names[start_index:]
+    last_names = last_names[start_index:]
+    percentages = percentages[start_index:]
+
     percentages = [int(percent.replace('%', '')) for percent in percentages]
     attendance_list = []
     for index, value in enumerate(zip(first_names, last_names, percentages)):
-        if not is_useless_row(index):
-            attendance_list.append(value)
+        attendance_list.append(value)
     
     # Allows people to sort the table with ascending or descending values
     if param and param[0] is 'up' or param[0] is 'down':
