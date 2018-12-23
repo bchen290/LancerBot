@@ -116,36 +116,36 @@ async def displayAttendance(ctx, isFRC, param=None):
     for index, value in enumerate(zip(first_names, last_names, percentages)):
         attendance_list.append(value)
     
-    # Allows people to sort the table with ascending or descending values
-    if param and param[0] is 'up' or param[0] is 'down':
+    if param:
         params = param.lower().split(' ')
-        is_descending = params[0] == 'down'
-        choices = {'first': 0, 'last': 1, 'percent': 2}
+        # Allows people to sort the table with ascending or descending values
+        if param[0] is 'up' or param[0] is 'down':
+            is_descending = params[0] == 'down'
+            choices = {'first': 0, 'last': 1, 'percent': 2}
 
-        try:
-            column = params[1]
-        except IndexError:
-            column = 0
+            try:
+                column = params[1]
+            except IndexError:
+                column = 0
+                
+            attendance_list = sorted(attendance_list, key=lambda x: x[choices.get(column, 0)], reverse=is_descending)
             
-        attendance_list = sorted(attendance_list, key=lambda x: x[choices.get(column, 0)], reverse=is_descending)
-        
-    # Allows people to input a name to check attendance
-    elif param:
-        split_name = param.lower().split(' ')
-        first_name = split_name[0]
-
-        try:
-            last_name = split_name[1]
-        except IndexError:
-            last_name = ''
-
-        attendance_list = [name for name in attendance_list if name[0].lower().find(first_name) != -1 and name[1].lower().find(last_name) != -1]
-
-        if len(attendance_list) > 0:
-            attendance_table.title = 'Attendance for ' + attendance_list[0]
+        # Allows people to input a name to check attendance
         else:
-            await ctx.channel.send('`Error 404: ' + attendance_list[0] + ' ' + (last_name + ' ' if last_name is not None else '') + 'not found`')
-            return
+            first_name = params[0]
+
+            try:
+                last_name = params[1]
+            except IndexError:
+                last_name = ''
+
+            attendance_list = [name for name in attendance_list if name[0].lower().find(first_name) != -1 and name[1].lower().find(last_name) != -1]
+
+            if len(attendance_list) > 0:
+                attendance_table.title = 'Attendance for ' + attendance_list[0]
+            else:
+                await ctx.channel.send('`Error 404: ' + attendance_list[0] + ' ' + (last_name + ' ' if last_name is not None else '') + 'not found`')
+                return
 
     for value in attendance_list:
         first_name, last_name, percent = value
