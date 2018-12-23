@@ -16,7 +16,10 @@ from dateutil import parser
 bot = commands.Bot(command_prefix='>')
 
 # Start index for the rows of the attendance sheet
-start_index = 3
+START_INDEX = 3
+
+# Max length of discord message
+MAX_LENGTH = 1900
 
 # If we are in Heroku then TBAKEY will be defined
 tba_key = os.getenv('TBAKEY')
@@ -107,9 +110,9 @@ async def display_attendance(ctx, is_frc, param=None):
         last_names = FTC_attendance_worksheet.col_values(2)
         percentages = FTC_attendance_worksheet.col_values(4)
 
-    first_names = first_names[start_index:]
-    last_names = last_names[start_index:]
-    percentages = percentages[start_index:]
+    first_names = first_names[START_INDEX:]
+    last_names = last_names[START_INDEX:]
+    percentages = percentages[START_INDEX:]
 
     percentages = [float(percent.replace('%', '')) for percent in percentages]
 
@@ -164,7 +167,7 @@ async def display_attendance(ctx, is_frc, param=None):
     current = ''
 
     for attendance in table:
-        if len(current) < 1900:
+        if len(current) < MAX_LENGTH:
             current += attendance + '\n'
         else:
             await ctx.channel.send('`' + current + '`')
@@ -242,7 +245,7 @@ async def _teams(ctx, *, page_number=0):
     current = ''
 
     for team in table:
-        if len(current) < 1900:
+        if len(current) < MAX_LENGTH:
             current += team + '\n'
         else:
             await ctx.channel.send('`' + current + '`')
@@ -253,21 +256,21 @@ async def _teams(ctx, *, page_number=0):
     teams_table.clear_rows()
 
 
-def extract_time(json):
-    if 'start' in json:
-        if 'date' in json['start']:
-            return (parser.parse(json['start']['date']) - datetime.datetime(1970, 1, 1)).total_seconds()
-        elif 'dateTime' in json['start']:
-            return (parser.parse(json['start']['dateTime']).replace(tzinfo=None) - datetime.datetime(1970, 1, 1)).total_seconds()
+def extract_time(data):
+    if 'start' in data:
+        if 'date' in data['start']:
+            return (parser.parse(data['start']['date']) - datetime.datetime(1970, 1, 1)).total_seconds()
+        elif 'dateTime' in data['start']:
+            return (parser.parse(data['start']['dateTime']).replace(tzinfo=None) - datetime.datetime(1970, 1, 1)).total_seconds()
         else:
             return 0
     else:
         return 0
 
 
-def filter_work_times(json):
-    if 'summary' in json:
-        if json['summary'] == 'FRC Work Time' or json['summary'] == 'RoboLancers Work Time':
+def filter_work_times(data):
+    if 'summary' in data:
+        if data['summary'] == 'FRC Work Time' or data['summary'] == 'RoboLancers Work Time':
             return False
         return True
     return False
@@ -276,10 +279,10 @@ def filter_work_times(json):
 @bot.command(pass_context=True, name='event')
 async def _event(ctx, *, query):
     d = datetime.datetime.utcnow()
-    URL = BASE_URL + d.isoformat('T') + 'Z'
-    URL += '&q=' + urllib.request.quote(query)
+    url = BASE_URL + d.isoformat('T') + 'Z'
+    url += '&q=' + urllib.request.quote(query)
 
-    contents = urllib.request.urlopen(URL).read()
+    contents = urllib.request.urlopen(url).read()
     parsed_json = json.loads(contents.decode())
     events = parsed_json['items']
 
@@ -320,9 +323,9 @@ async def _event(ctx, *, query):
 @bot.command(pass_context=True, name='events')
 async def _events(ctx, *, month_name=None):
     d = datetime.datetime.utcnow()
-    URL = BASE_URL + d.isoformat('T') + 'Z'
+    url = BASE_URL + d.isoformat('T') + 'Z'
 
-    contents = urllib.request.urlopen(URL).read()
+    contents = urllib.request.urlopen(url).read()
     parsed_json = json.loads(contents.decode())
     events = parsed_json['items']
 
