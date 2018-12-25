@@ -83,7 +83,7 @@ class CalendarCog:
 
         return events
 
-    @commands.command(pass_context=True, name='events')
+    @commands.command(pass_context=True, aliases=['e', 'event', 'events'])
     async def _events(self, ctx, *, query=None):
         events = self.get_data()
 
