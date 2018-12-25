@@ -75,6 +75,8 @@ class AttendanceCog:
 
         attendance_list = [attendance for attendance in zip(first_names, last_names, percentages)]
 
+        self.attendance_table.title = 'Attendance for ' + ('FTC', 'FRC')[is_frc]
+
         if param:
             params = param.lower().split(' ')
             # Allows people to sort the table with ascending or descending values
@@ -100,10 +102,10 @@ class AttendanceCog:
                     last_name = ''
 
                 attendance_list = [name for name in attendance_list if
-                                   name[0].lower().find(first_name) != -1 and name[1].lower().find(last_name) != -1]
+                                   first_name.lower() in name[0].lower() and last_name.lower() in name[1].lower()]
 
                 if len(attendance_list) > 0:
-                    self.attendance_table.title = 'Attendance for ' + attendance_list[0][0]
+                    self.attendance_table.title = 'Attendance for ' + param.title()
                 else:
                     await ctx.channel.send('`Error 404: ' + first_name + ' ' + last_name + ' not found`')
                     return
@@ -135,6 +137,7 @@ class AttendanceCog:
         await ctx.channel.send('`' + current + '`')
         await ctx.channel.send('`' + '\(!!˚☐˚)/ = Not meeting 75% requirement' + '`')
 
+        self.attendance_table.title = ''
         self.attendance_table.clear_rows()
 
 
