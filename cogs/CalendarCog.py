@@ -11,7 +11,10 @@ from discord.ext import commands
 
 
 # noinspection PyMethodMayBeStatic,PyUnusedLocal
-class CalendarCog:
+from discord.ext.commands import Cog
+
+
+class CalendarCog(Cog):
     def __init__(self, bot):
         self.bot = bot
 

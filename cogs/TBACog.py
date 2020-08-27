@@ -4,6 +4,7 @@ import discord
 import tbapy
 from discord import Embed
 from discord.ext import commands
+from discord.ext.commands import Cog
 from prettytable import PrettyTable
 
 
@@ -14,7 +15,7 @@ class ArgumentError(Exception):
     pass
 
 
-class TBACog:
+class TBACog(Cog):
     def __init__(self, bot):
         self.bot = bot
 
