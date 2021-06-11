@@ -31,5 +31,5 @@ tbapy==1.3.0
 typing-extensions==3.7.4.3
 uritemplate==3.0.0
 urllib3==1.23
-websockets==5.0
+websockets==9.1
 yarl==1.1.1
